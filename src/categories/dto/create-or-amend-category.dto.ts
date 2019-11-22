@@ -1,7 +1,8 @@
-import { IsBoolean, IsString } from 'class-validator';
+import { IsBoolean, IsString, Length } from 'class-validator';
 
 export class CreateOrAmendCategoryDto {
   @IsString()
+  @Length(1, 6)
   readonly categoryName: string;
 
   @IsBoolean()

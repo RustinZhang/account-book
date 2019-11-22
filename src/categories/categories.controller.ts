@@ -4,7 +4,7 @@ import { CATEGORIES_PATH } from '../consts';
 @Controller(CATEGORIES_PATH.ROOT)
 export class CategoriesController {
   @Get()
-  getList() {
+  query() {
     // todo 获取列表
   }
 
