@@ -1,10 +1,10 @@
-drop table if exists category;
+drop table if exists categories;
 
-drop table if exists transaction;
+drop table if exists transactions;
 
-drop table if exists user;
+drop table if exists users;
 
-create table category
+create table categories
 (
    category_code        int not null auto_increment,
    category_name        varchar(6) not null,
@@ -15,20 +15,21 @@ create table category
 )
 auto_increment = 1;
 
-create table transaction
+create table transactions
 (
    transaction_code     int not null auto_increment,
    category_code        int not null,
    user_id              int not null,
    transaction_amount   float(8,2) not null,
    transaction_remark   varchar(200),
+   transaction_date     date not null,
    transaction_create_time datetime not null,
    transaction_update_time datetime,
    primary key (transaction_code)
 )
 auto_increment = 1;
 
-create table user
+create table users
 (
    user_id              int not null auto_increment,
    user_name            varchar(8) not null,
@@ -39,9 +40,9 @@ create table user
 )
 auto_increment = 1;
 
-alter table transaction add constraint FK_category_transaction_relationship foreign key (category_code)
-      references category (category_code) on delete restrict on update restrict;
+alter table transactions add constraint FK_category_transaction_relationship foreign key (category_code)
+      references categories (category_code) on delete restrict on update restrict;
 
-alter table transaction add constraint FK_transaction_user_relationship foreign key (user_id)
-      references user (user_id) on delete restrict on update restrict;
+alter table transactions add constraint FK_transaction_user_relationship foreign key (user_id)
+      references users (user_id) on delete restrict on update restrict;
 

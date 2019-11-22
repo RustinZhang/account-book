@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { UserModule } from './user/user.module';
-import { AuthModule } from './auth/auth.module';
-import { TransactionModule } from './transaction/transaction.module';
-import { CategoryModule } from './category/category.module';
+import { UsersModule } from './users/users.module';
+import { AuthsModule } from './auths/auths.module';
+import { TransactionsModule } from './transactions/transactions.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
-  imports: [UserModule, AuthModule, TransactionModule, CategoryModule],
+  imports: [UsersModule, AuthsModule, TransactionsModule, CategoriesModule],
   controllers: [AppController],
   providers: [AppService],
 })
