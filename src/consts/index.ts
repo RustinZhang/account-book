@@ -1,1 +1,2 @@
-export * from './route-paths';
+export * from './route-paths.cont';
+export * from './auth-type.const';
