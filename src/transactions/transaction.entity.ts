@@ -1,0 +1,49 @@
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { TABLE_NAMES } from '../consts';
+import { User } from '../users/user.entity';
+import { Category } from '../categories/category.entity';
+
+@Entity(TABLE_NAMES.TRANSACTIONS)
+export class Transaction {
+  @PrimaryGeneratedColumn({
+    name: 'transaction_code',
+  })
+  transactionCode: number;
+
+  @Column({
+    type: 'decimal',
+    precision: 15,
+    scale: 2,
+  })
+  amount: number;
+
+  @Column({
+    type: 'varchar',
+    length: 200,
+  })
+  remark: string;
+
+  @Column({
+    type: 'date',
+  })
+  date: string;
+
+  @ManyToOne(
+    type => User,
+    user => user.transactions,
+    {
+      onDelete: 'RESTRICT',
+      onUpdate: 'RESTRICT',
+    },
+  )
+  user: User;
+
+  @ManyToOne(
+    type => Category, category => category.transactions,
+    {
+      onDelete: 'RESTRICT',
+      onUpdate: 'RESTRICT',
+    },
+  )
+  category: Category;
+}

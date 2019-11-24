@@ -5,9 +5,28 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { CategoriesModule } from './categories/categories.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { User } from './users/user.entity';
+import { Transaction } from './transactions/transaction.entity';
+import { Category } from './categories/category.entity';
 
 @Module({
-  imports: [UsersModule, AuthModule, TransactionsModule, CategoriesModule],
+  imports: [
+    UsersModule,
+    AuthModule,
+    TransactionsModule,
+    CategoriesModule,
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: 'localhost',
+      port: 3306,
+      username: 'root',
+      password: 'account-book',
+      database: 'account_book',
+      entities: [User, Transaction, Category],
+      synchronize: true,
+    }),
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

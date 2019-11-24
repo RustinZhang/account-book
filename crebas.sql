@@ -1,3 +1,4 @@
+/* 此文件仅作参考，使用orm建表 */
 drop table if exists categories;
 
 drop table if exists transactions;
