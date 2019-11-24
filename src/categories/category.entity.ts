@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { TABLE_NAMES } from '../consts';
 import { Transaction } from '../transactions/transaction.entity';
 
@@ -21,6 +21,18 @@ export class Category {
     type: 'bool',
   })
   isExpense: boolean;
+
+  @CreateDateColumn({
+    name: 'category_create_time',
+    type: 'datetime',
+  })
+  createTime: Date;
+
+  @UpdateDateColumn({
+    name: 'category_update_time',
+    type: 'datetime',
+  })
+  updateTime: Date;
 
   @OneToMany(type => Transaction, transaction => transaction.category)
   transactions: Transaction[];

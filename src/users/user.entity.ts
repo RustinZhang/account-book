@@ -1,4 +1,4 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { TABLE_NAMES } from '../consts';
 import { Transaction } from '../transactions/transaction.entity';
 
@@ -14,14 +14,26 @@ export class User {
     type: 'varchar',
     length: 8,
   })
-  userName: string;
+  username: string;
 
   @Column({
     name: 'user_password',
     type: 'varchar',
     length: 50,
   })
-  userPassword: string;
+  password: string;
+
+  @CreateDateColumn({
+    name: 'user_create_time',
+    type: 'datetime',
+  })
+  createTime: Date;
+
+  @UpdateDateColumn({
+    name: 'user_update_time',
+    type: 'datetime',
+  })
+  updateTime: Date;
 
   @OneToMany(type => Transaction, transaction => transaction.user)
   transactions: Transaction[];

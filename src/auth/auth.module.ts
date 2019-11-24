@@ -13,12 +13,12 @@ const oneDay = '86400s';
 @Module({
   providers: [AuthService, LocalStrategy, JwtStrategy],
   imports: [
-    forwardRef(() => UsersModule),
-    PassportModule.register({defaultStrategy: AUTH_TYPE.JWT}),
+    PassportModule,
     JwtModule.register({
       secret: jwtConstants.secret,
       signOptions: { expiresIn: oneDay },
     }),
+    forwardRef(() => UsersModule),
   ],
   exports: [AuthService],
 })
