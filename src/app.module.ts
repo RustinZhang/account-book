@@ -9,6 +9,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './users/user.entity';
 import { Transaction } from './transactions/transaction.entity';
 import { Category } from './categories/category.entity';
+import { APP_FILTER } from '@nestjs/core';
+import { ForbiddenFilter } from './common/filters/forbidden.filter';
 
 @Module({
   imports: [
@@ -28,6 +30,12 @@ import { Category } from './categories/category.entity';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_FILTER,
+      useClass: ForbiddenFilter,
+    }
+  ],
 })
 export class AppModule {}

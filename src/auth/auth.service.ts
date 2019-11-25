@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { get } from 'lodash';
+import { AccessForbidden } from '../common/exceptions/access-forbidden.exception';
+import { ERROR_CODES } from '../consts';
 
 @Injectable()
 export class AuthService {
