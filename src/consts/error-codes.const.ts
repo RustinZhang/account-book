@@ -1,4 +1,5 @@
 export enum ERROR_CODES {
   WRONG_PASSWORD = 40001,
   INVALID_ACCESS_TOKEN,
+  UNRECOGNIZE = 99999, // 非项目代码抛出的错误（如依赖库等）
 }
