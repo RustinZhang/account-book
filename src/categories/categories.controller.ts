@@ -1,6 +1,7 @@
-import { Controller, Delete, Get, Post, Put, UseGuards } from '@nestjs/common';
+import { Controller, Delete, Get, Post, Put, UseGuards, Response, Body, ValidationPipe } from '@nestjs/common';
 import { AUTH_TYPE, CATEGORIES_PATH } from '../consts';
 import { AuthGuard } from '@nestjs/passport';
+import { CreateOrAmendCategoryDto } from './dto/create-or-amend-category.dto';
 
 @UseGuards(AuthGuard(AUTH_TYPE.JWT))
 @Controller(CATEGORIES_PATH.ROOT)
@@ -11,7 +12,8 @@ export class CategoriesController {
   }
 
   @Post()
-  create() {
+  create(@Body() createOrAmendCategoryDto: CreateOrAmendCategoryDto) {
+    console.log(1111);
     return '新建分类';
   }
 

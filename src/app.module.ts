@@ -23,7 +23,7 @@ import { ExceptionWrapper } from './common/filters/global.filter';
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: 'account-book',
+      password: 'account_book',
       database: 'account_book',
       entities: [User, Transaction, Category],
       synchronize: true,
@@ -38,4 +38,4 @@ import { ExceptionWrapper } from './common/filters/global.filter';
     },
   ],
 })
-export class AppModule {}
+export class AppModule { }
