@@ -7,7 +7,7 @@ export enum CATEGORIES_PATH {
 // 账目
 export enum TRANSACTIONS_PATH {
   ROOT = 'transactions',
-  CODE_PARAM = ':transactionCode',
+  CODE_PARAM = 'transactionCode',
 }
 
 // 用户

@@ -1,6 +1,5 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpException, HttpStatus } from '@nestjs/common';
 import { ResWrapper } from '../dto/response';
-import { IDefaultException } from '../interfaces/default-exception.interface';
 import {get} from 'lodash';
 import { ERROR_CODES } from '../../consts';
 
