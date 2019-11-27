@@ -1,6 +1,7 @@
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { TABLE_NAMES } from '../consts';
 import { Transaction } from '../transactions/transaction.entity';
+import { Category } from '../categories/category.entity';
 
 @Entity(TABLE_NAMES.USERS)
 export class User {
@@ -37,4 +38,7 @@ export class User {
 
   @OneToMany(type => Transaction, transaction => transaction.user)
   transactions: Transaction[];
+
+  @OneToMany(type => Category, category => category.user)
+  categories: Category[];
 }

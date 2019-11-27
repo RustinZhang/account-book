@@ -7,7 +7,6 @@ import { AuthService } from '../auth/auth.service';
 export class UsersController {
   constructor(private readonly authService: AuthService) {}
 
-
   @UseGuards(AuthGuard(AUTH_TYPE.LOCAL))
   @Post(USERS_PATH.ACCESS)
   systemAccess(@Request() req) {
