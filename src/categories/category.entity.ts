@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { TABLE_NAMES } from '../consts';
 import { Transaction } from '../transactions/transaction.entity';
 import { User } from '../users/user.entity';
@@ -40,7 +40,7 @@ export class Category {
 
   @ManyToOne(
     type => User,
-    user => user.transactions,
+    user => user.categories,
     {
       onDelete: 'RESTRICT',
       onUpdate: 'RESTRICT',
