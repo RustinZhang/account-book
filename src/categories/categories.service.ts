@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './category.entity';
 import { Transaction } from '../transactions/transaction.entity';
-import { AccessForbidden } from '../common/exceptions/access-forbidden.exception';
 import { QueryDto } from './dto/query.dto';
 import { isEmpty } from 'lodash';
 import { User } from 'src/users/user.entity';
@@ -49,16 +48,17 @@ export class CategoriesService {
         if (!!categoryCode) {
             category.categoryCode = categoryCode;
         }
-        return this.categoriesRepository.save(category);
-    }
-
-    async delete(categoryCode: number) {
-        await this.categoriesRepository.findOneOrFail(categoryCode);
-        await this.categoriesRepository.delete(categoryCode);
+        await this.categoriesRepository.save(category);
         return {};
     }
 
-    findCategory(params: object) {
-        return this.categoriesRepository.findOne(params);
+    async delete(categoryCode: number) {
+        const category: Category = await this.categoriesRepository.findOneOrFail(categoryCode);
+        const transactions: Transaction[] = await this.transactionRepository.find({ where: { category } });
+        if (transactions && transactions.length > 0) {
+            await this.transactionRepository.remove(transactions);
+        }
+        await this.categoriesRepository.delete(categoryCode);
+        return {};
     }
 }
