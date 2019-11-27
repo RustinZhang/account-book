@@ -10,7 +10,7 @@ export function CheckDate(validationOptions?: ValidationOptions) {
       options: validationOptions,
       validator: {
         async validate(text: string, args: ValidationArguments) {
-          return /[d]{4}\/[d]{2}\/[d]{2}/.test(toString(text));
+          return /\d{4}\/\d{2}\/\d{2}/.test(toString(text));
         },
       },
     });

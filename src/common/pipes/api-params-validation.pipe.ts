@@ -6,10 +6,9 @@ import { get } from 'lodash';
 
 export class ApiParamsValidationPipe implements PipeTransform {
     async transform(value: any, metadata: ArgumentMetadata) {
-        console.log(metadata);
         const { metatype } = metadata;
         // 如果参数不是类而是普通的JavaScript对象以及自定义参数则不进行验证
-        if (!metatype || !this.toValidate(metatype) || metadata.type === 'custom') {
+        if (!(/^(\w|[$])(\w*|\d*)Dto$/.test(get(metatype, 'name', '')))) {
             return value;
         }
         const object = plainToClass(metatype, value);

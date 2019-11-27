@@ -49,7 +49,6 @@ export class CategoriesService {
         if (!!categoryCode) {
             category.categoryCode = categoryCode;
         }
-        category.transactions = [];
         return this.categoriesRepository.save(category);
     }
 

@@ -1,5 +1,5 @@
 export interface TransactionDetail {
-  isExpense: true;
+  isExpense: boolean;
   amount: number;
   date: string;
   transactionCode: number;

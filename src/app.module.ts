@@ -23,7 +23,7 @@ import { ExceptionWrapper } from './common/filters/global.filter';
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: 'djh1993',
+      password: 'account-book',
       database: 'account_book',
       entities: [User, Transaction, Category],
       synchronize: true,
