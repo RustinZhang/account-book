@@ -1,7 +1,7 @@
 // 账目分类
 export enum CATEGORIES_PATH {
   ROOT = 'categories',
-  CODE_PARAM = ':categoryCode',
+  CODE_PARAM = 'categoryCode',
 }
 
 // 账目

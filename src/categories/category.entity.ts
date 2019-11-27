@@ -1,13 +1,14 @@
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn, ManyToOne } from 'typeorm';
 import { TABLE_NAMES } from '../consts';
 import { Transaction } from '../transactions/transaction.entity';
+import { User } from '../users/user.entity';
 
 @Entity(TABLE_NAMES.CATEGORIES)
 export class Category {
   @PrimaryGeneratedColumn({
     name: 'category_code',
   })
-  categoryCode: string;
+  categoryCode: number;
 
   @Column({
     name: 'category_name',
@@ -36,4 +37,14 @@ export class Category {
 
   @OneToMany(type => Transaction, transaction => transaction.category)
   transactions: Transaction[];
+
+  @ManyToOne(
+    type => User,
+    user => user.transactions,
+    {
+      onDelete: 'RESTRICT',
+      onUpdate: 'RESTRICT',
+    },
+  )
+  user: User;
 }

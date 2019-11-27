@@ -1,29 +1,38 @@
-import { Controller, Delete, Get, Post, Put, UseGuards, Response, Body, ValidationPipe } from '@nestjs/common';
+import { Controller, Delete, Get, Post, Put, UseGuards, Response, Body, ValidationPipe, Param, ParseIntPipe, Query } from '@nestjs/common';
 import { AUTH_TYPE, CATEGORIES_PATH } from '../consts';
 import { AuthGuard } from '@nestjs/passport';
 import { CreateOrAmendCategoryDto } from './dto/create-or-amend-category.dto';
+import { CategoriesService } from './categories.service';
+import { QueryDto } from './dto/query.dto';
+import { toNumber } from 'lodash';
+import { User } from '../common/decorators/user.decorator';
+import { User as UserEntity } from '../users/user.entity';
 
 @UseGuards(AuthGuard(AUTH_TYPE.JWT))
 @Controller(CATEGORIES_PATH.ROOT)
 export class CategoriesController {
+  constructor(private readonly categoriesService: CategoriesService) { }
+
   @Get()
-  query() {
-    return '获取分类列表';
+  query(@Query() queryDto: QueryDto) {
+    return this.categoriesService.getList(queryDto);
   }
 
   @Post()
-  create(@Body() createOrAmendCategoryDto: CreateOrAmendCategoryDto) {
-    console.log(1111);
-    return '新建分类';
+  create(@Body() createOrAmendCategoryDto: CreateOrAmendCategoryDto, @User() user: UserEntity) {
+    return this.categoriesService.createOrAmend(createOrAmendCategoryDto, user.userId);
   }
 
-  @Delete(CATEGORIES_PATH.CODE_PARAM)
-  remove() {
-    return '删除分类';
+  @Delete(`:${CATEGORIES_PATH.CODE_PARAM}`)
+  remove(@Param(CATEGORIES_PATH.CODE_PARAM, new ParseIntPipe()) categoryCode: string) {
+    return this.categoriesService.delete(toNumber(categoryCode));
   }
 
-  @Put(CATEGORIES_PATH.CODE_PARAM)
-  amend() {
-    return '修改分类';
+  @Put(`:${CATEGORIES_PATH.CODE_PARAM}`)
+  amend(
+    @Param(CATEGORIES_PATH.CODE_PARAM, new ParseIntPipe()) categoryCode,
+    @Body() createOrAmendCategoryDto: CreateOrAmendCategoryDto,
+    @User() user: UserEntity) {
+    return this.categoriesService.createOrAmend(createOrAmendCategoryDto, user.userId, categoryCode);
   }
 }
