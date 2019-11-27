@@ -1,7 +1,8 @@
 import { PipeTransform, ArgumentMetadata } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { validate } from 'class-validator';
-import { AccessForbidden } from '../exceptions/access-forbidden.exception';
+import { ParamsError } from '../exceptions/params-error.exception';
+import {get} from 'lodash';
 
 export class ApiParamsValidationPipe implements PipeTransform {
     async transform(value: any, metadata: ArgumentMetadata) {
@@ -11,16 +12,18 @@ export class ApiParamsValidationPipe implements PipeTransform {
             return value;
         }
         const object = plainToClass(metatype, value);
-        const errors = await validate(object);
+        const errors = await validate(object, {
+          forbidUnknownValues: true,
+        });
         if (errors.length > 0) {
             const error = errors.shift();
             const constraints = error.constraints;
             const contexts = error.contexts;
             for (const key in constraints) {
                 if (constraints.hasOwnProperty(key)) {
-                    throw new AccessForbidden({
-                        errorCode: contexts[key].errorCode,
-                        message: constraints[key],
+                    throw new ParamsError({
+                        errorCode: get(contexts, `${key}.errorCode`),
+                        message: get(constraints, key),
                     });
                 }
             }

@@ -1,9 +1,15 @@
-import { IsInt } from 'class-validator';
+import { IsInt, IsOptional, IsPositive, ValidateIf } from 'class-validator';
+import { ERROR_CODES } from '../../consts';
+import { getNotPositiveOption, getWrongTypeOption } from '../../common/utils/utils';
+import {isNil} from 'lodash';
+import { IsPositiveInt } from '../../common/validators/positive-int.validator';
 
 export class GetTransactionsDto {
-  @IsInt()
-  readonly size: number;
+  @ValidateIf(data => data && (data.size !== '' && !isNil(data.size)))
+  @IsPositiveInt()
+  readonly size: string;
 
-  @IsInt()
-  readonly page: number;
+  @ValidateIf(data => data && (data.size !== '' && !isNil(data.size)))
+  @IsPositiveInt()
+  readonly page: string;
 }

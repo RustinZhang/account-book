@@ -10,6 +10,8 @@ import { Category } from '../categories/category.entity';
 @Module({
   controllers: [TransactionsController],
   providers: [TransactionsService],
-  imports: [TypeOrmModule.forFeature([User, Transaction, Category])],
+  imports: [
+    TypeOrmModule.forFeature([User, Transaction, Category]),
+  ],
 })
 export class TransactionsModule {}

@@ -5,6 +5,8 @@ import { GetTransactionsDto } from './dto/get-transactions.dto';
 import { get, toNumber } from 'lodash';
 import { TransactionsService } from './transactions.service';
 import { CreateOrAmendTransactionDto } from './dto/create-or-amend-transaction.dto';
+import { User } from '../common/decorators/user.decorator';
+import { User as UserEntity } from '../users/user.entity';
 
 @UseGuards(AuthGuard(AUTH_TYPE.JWT))
 @Controller(TRANSACTIONS_PATH.ROOT)
@@ -24,16 +26,18 @@ export class TransactionsController {
   }
 
   @Post()
-  async create(@Req() request: Request) {
-    const data: CreateOrAmendTransactionDto = get(request, 'body');
-    const userId: string = get(request, 'user.userId');
+  async create(@Body() data: CreateOrAmendTransactionDto, @User() user: UserEntity) {
+    const userId: string = get(user, 'userId');
     return this.transactionsService.createOrAmend(data, userId);
   }
 
   @Put(`:${TRANSACTIONS_PATH.CODE_PARAM}`)
-  async amend(@Req() request: Request, @Param(TRANSACTIONS_PATH.CODE_PARAM) code: string) {
-    const data: CreateOrAmendTransactionDto = get(request, 'body');
-    const userId: string = get(request, 'user.userId');
+  async amend(
+    @Body() data: CreateOrAmendTransactionDto,
+    @User() user: UserEntity,
+    @Param(TRANSACTIONS_PATH.CODE_PARAM) code: string,
+  ) {
+    const userId: string = get(user, 'userId');
     return this.transactionsService.createOrAmend(data, userId, toNumber(code));
   }
 
