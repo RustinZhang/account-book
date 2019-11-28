@@ -4,5 +4,6 @@ export enum ERROR_CODES {
   PARAM_TYPE_ERROR,
   PARAM_RANGE_ERROR,
   PARAM_MISSING,
+  CATEGORIES_TYPE_HAVE_SURVICE, // 添加更新账目分类已经存在
   UNRECOGNIZE = 99999, // 非项目代码抛出的错误（如依赖库等）
 }
