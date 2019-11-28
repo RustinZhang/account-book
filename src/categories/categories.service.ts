@@ -6,7 +6,7 @@ import { Category } from './category.entity';
 import { Transaction } from '../transactions/transaction.entity';
 import { QueryDto } from './dto/query.dto';
 import { isEmpty } from 'lodash';
-import { User } from 'src/users/user.entity';
+import { User } from '../users/user.entity';
 
 @Injectable()
 export class CategoriesService {
