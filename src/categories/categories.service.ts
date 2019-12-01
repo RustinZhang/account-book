@@ -10,6 +10,7 @@ import { User } from '../users/user.entity';
 import { ParamsError } from '../common/exceptions/params-error.exception';
 import { ERROR_CODES } from '../consts';
 import { CATEGORIES_TYPE } from './dto/query.dto';
+import { CategoryListInterface } from './interfaces/category-list.interface';
 
 @Injectable()
 export class CategoriesService {
@@ -22,7 +23,7 @@ export class CategoriesService {
         private readonly userRepository: Repository<User>,
     ) { }
 
-    async getList(data: QueryDto) {
+    async getList(data: QueryDto): Promise<CategoryListInterface> {
         const params: any = {
             order: {
                 updateTime: 'DESC',
@@ -55,7 +56,7 @@ export class CategoriesService {
         };
     }
 
-    async createOrAmend(data: CreateOrAmendCategoryDto, userId: string, categoryCode?: number) {
+    async createOrAmend(data: CreateOrAmendCategoryDto, userId: string, categoryCode?: number): Promise<{}> {
         const category = !!categoryCode ? await this.categoriesRepository.findOneOrFail(categoryCode) : new Category();
 
         const { categoryName, isExpense } = data;
@@ -80,7 +81,7 @@ export class CategoriesService {
         return {};
     }
 
-    async delete(categoryCode: number) {
+    async delete(categoryCode: number): Promise<{}> {
         const category: Category = await this.categoriesRepository.findOneOrFail(categoryCode);
         // const transactions: Transaction[] = await this.transactionRepository.find({ where: { category } });
         // if (transactions && transactions.length > 0) {

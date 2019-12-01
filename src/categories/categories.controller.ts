@@ -7,6 +7,7 @@ import { QueryDto } from './dto/query.dto';
 import { toNumber } from 'lodash';
 import { User } from '../common/decorators/user.decorator';
 import { User as UserEntity } from '../users/user.entity';
+import { CategoryListInterface } from './interfaces/category-list.interface';
 
 @UseGuards(AuthGuard(AUTH_TYPE.JWT))
 @Controller(CATEGORIES_PATH.ROOT)
@@ -14,17 +15,17 @@ export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) { }
 
   @Get()
-  query(@Query() queryDto: QueryDto) {
+  query(@Query() queryDto: QueryDto): Promise<CategoryListInterface> {
     return this.categoriesService.getList(queryDto);
   }
 
   @Post()
-  create(@Body() createOrAmendCategoryDto: CreateOrAmendCategoryDto, @User() user: UserEntity) {
+  create(@Body() createOrAmendCategoryDto: CreateOrAmendCategoryDto, @User() user: UserEntity): Promise<{}> {
     return this.categoriesService.createOrAmend(createOrAmendCategoryDto, user.userId);
   }
 
   @Delete(`:${CATEGORIES_PATH.CODE_PARAM}`)
-  remove(@Param(CATEGORIES_PATH.CODE_PARAM, new ParseIntPipe()) categoryCode: string) {
+  remove(@Param(CATEGORIES_PATH.CODE_PARAM, new ParseIntPipe()) categoryCode: string): Promise<{}> {
     return this.categoriesService.delete(toNumber(categoryCode));
   }
 
@@ -32,7 +33,7 @@ export class CategoriesController {
   amend(
     @Param(CATEGORIES_PATH.CODE_PARAM, new ParseIntPipe()) categoryCode,
     @Body() createOrAmendCategoryDto: CreateOrAmendCategoryDto,
-    @User() user: UserEntity) {
+    @User() user: UserEntity): Promise<{}> {
     return this.categoriesService.createOrAmend(createOrAmendCategoryDto, user.userId, categoryCode);
   }
 }
