@@ -1,4 +1,4 @@
-import { IsDateString, IsInt, IsNotEmpty, IsNumber, IsPositive, IsString } from 'class-validator';
+import { IsDateString, IsInt, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
 import { getNotEmptyOption, getNotPositiveOption, getWrongTypeOption } from '../../common/utils/utils';
 import { CheckDate } from '../../common/validators/date.validator';
 import { IsPositiveInt } from '../../common/validators/positive-int.validator';
@@ -19,7 +19,7 @@ export class CreateOrAmendTransactionDto {
   @IsPositive(getNotPositiveOption())
   readonly amount: number;
 
-  @IsNotEmpty(getNotEmptyOption())
+  @IsOptional()
   @IsString(getWrongTypeOption('字符'))
   readonly remark: string;
 
