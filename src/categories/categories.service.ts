@@ -83,10 +83,13 @@ export class CategoriesService {
 
     async delete(categoryCode: number): Promise<{}> {
         const category: Category = await this.categoriesRepository.findOneOrFail(categoryCode);
-        // const transactions: Transaction[] = await this.transactionRepository.find({ where: { category } });
-        // if (transactions && transactions.length > 0) {
-        //     await this.transactionRepository.remove(transactions);
-        // }
+        const transactions: Transaction[] = await this.transactionRepository.find({ where: { category } });
+        if (transactions && transactions.length > 0) {
+            throw new ParamsError({
+                errorCode: ERROR_CODES.CATEGORIES_TYPE_DELETE_FORBIDDEN,
+                message: '当前分类已有账目关联使用，不能删除',
+            });
+        }
         await this.categoriesRepository.delete(categoryCode);
         return {};
     }
