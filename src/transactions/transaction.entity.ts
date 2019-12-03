@@ -50,7 +50,7 @@ export class Transaction {
     },
   )
   @JoinColumn({
-    name: 'fk_user_id',
+    name: 'fk_transactions_user_id',
   })
   user: User;
 
@@ -63,7 +63,7 @@ export class Transaction {
     },
   )
   @JoinColumn({
-    name: 'fk_category_code',
+    name: 'fk_transactions_category_code',
   })
   category: Category;
 }

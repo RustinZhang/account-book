@@ -48,7 +48,7 @@ export class Category {
     },
   )
   @JoinColumn({
-    name: 'fk_user_id',
+    name: 'fk_categories_user_id',
   })
   user: User;
 }
