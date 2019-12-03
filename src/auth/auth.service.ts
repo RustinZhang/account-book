@@ -2,8 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { get } from 'lodash';
-import { AccessForbidden } from '../common/exceptions/access-forbidden.exception';
-import { ERROR_CODES } from '../consts';
+import sha256 = require('crypto-js/sha256');
 
 @Injectable()
 export class AuthService {
@@ -15,8 +14,9 @@ export class AuthService {
   async validateUser(username: string, pass: string): Promise<any> {
     try {
       const user = await this.usersService.findOne(username);
-      if (get(user, 'password') === pass) {
-        const { password, ...result } = user;
+      const passEncoded = this.encodePassword(pass, get(user, 'salt'));
+      if (get(user, 'password') === passEncoded) {
+        const { password, salt, ...result } = user;
         return {
           ...result,
           isNew: false,
@@ -24,8 +24,10 @@ export class AuthService {
       }
       return null;
     } catch (e) {
-      const user = await this.usersService.createOne(username, pass);
-      const { password, ...result } = user;
+      const newSalt = this.getSalt();
+      const passToSave = this.encodePassword(pass, newSalt);
+      const user = await this.usersService.createOne(username, passToSave, newSalt);
+      const { password, salt, ...result } = user;
       return {
         ...result,
         isNew: true,
@@ -39,5 +41,13 @@ export class AuthService {
       accessToken: `Bearer ${this.jwtService.sign(payload)}`,
       isNew: user.isNew,
     };
+  }
+
+  getSalt() {
+    return 'account-book' + Date.now();
+  }
+
+  encodePassword(pass, salt) {
+    return sha256(pass + salt).toString();
   }
 }

@@ -20,9 +20,15 @@ export class User {
   @Column({
     name: 'user_password',
     type: 'varchar',
-    length: 50,
+    length: 255,
   })
   password: string;
+
+  @Column({
+    type: 'varchar',
+    length: 255,
+  })
+  salt: string;
 
   @CreateDateColumn({
     name: 'user_create_time',
@@ -36,7 +42,10 @@ export class User {
   })
   updateTime: Date;
 
-  @OneToMany(type => Transaction, transaction => transaction.user)
+  @OneToMany(
+    type => Transaction,
+    transaction => transaction.user,
+    {})
   transactions: Transaction[];
 
   @OneToMany(type => Category, category => category.user)

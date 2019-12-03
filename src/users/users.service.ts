@@ -15,10 +15,11 @@ export class UsersService {
     return this.userRepository.findOneOrFail({username});
   }
 
-  async createOne(username: string, password: string) {
+  async createOne(username: string, password: string, salt: string) {
     const user = new User();
     user.username = username;
     user.password = password;
+    user.salt = salt;
     await this.userRepository.save(user);
     return this.userRepository.findOne({username});
   }

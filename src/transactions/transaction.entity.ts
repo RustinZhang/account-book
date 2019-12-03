@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { TABLE_NAMES } from '../consts';
 import { User } from '../users/user.entity';
 import { Category } from '../categories/category.entity';
@@ -46,8 +46,12 @@ export class Transaction {
     {
       onDelete: 'RESTRICT',
       onUpdate: 'RESTRICT',
+      nullable: false,
     },
   )
+  @JoinColumn({
+    name: 'fk_user_id',
+  })
   user: User;
 
   @ManyToOne(
@@ -55,7 +59,11 @@ export class Transaction {
     {
       onDelete: 'RESTRICT',
       onUpdate: 'RESTRICT',
+      nullable: false,
     },
   )
+  @JoinColumn({
+    name: 'fk_category_code',
+  })
   category: Category;
 }
