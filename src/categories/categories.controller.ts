@@ -15,8 +15,8 @@ export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) { }
 
   @Get()
-  query(@Query() queryDto: QueryDto): Promise<CategoryListInterface> {
-    return this.categoriesService.getList(queryDto);
+  query(@Query() queryDto: QueryDto, @User() user: UserEntity): Promise<CategoryListInterface> {
+    return this.categoriesService.getList(queryDto, user.userId);
   }
 
   @Post()

@@ -5,7 +5,7 @@ import { Transaction } from './transaction.entity';
 import { CreateOrAmendTransactionDto } from './dto/create-or-amend-transaction.dto';
 import { User } from '../users/user.entity';
 import { Category } from '../categories/category.entity';
-import {map, get} from 'lodash';
+import { map, get } from 'lodash';
 import { TransactionList } from './interfaces/transaction-list.interface';
 import { TransactionDetail } from './interfaces/transaction-detail.interface';
 
@@ -18,15 +18,19 @@ export class TransactionsService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(Category)
     private readonly categoryRepository: Repository<Category>,
-  ) {}
+  ) { }
 
-  public async findList(size, page): Promise<TransactionList> {
+  public async findList(size: number, page: number, userId: string): Promise<TransactionList> {
+    const user = await this.findUser(userId);
     const [transactions, count] = await this.transactionRepository.findAndCount({
       skip: ((page - 1) * size),
       relations: ['category'],
       take: size,
       order: {
         date: 'DESC',
+      },
+      where: {
+        user,
       },
     });
     return {
@@ -42,7 +46,7 @@ export class TransactionsService {
           isExpense: category.isExpense,
           ...data,
         };
-        }),
+      }),
       pagination: {
         size,
         page,
@@ -59,7 +63,7 @@ export class TransactionsService {
       createTime,
       updateTime,
       ...transaction
-    } = await this.transactionRepository.findOneOrFail(transactionCode, {relations: ['category']});
+    } = await this.transactionRepository.findOneOrFail(transactionCode, { relations: ['category'] });
     return {
       categoryCode: category.categoryCode,
       isExpense: category.isExpense,
@@ -68,9 +72,10 @@ export class TransactionsService {
   }
 
   public async createOrAmend(data: CreateOrAmendTransactionDto, userId: string, transactionCode?: number): Promise<{}> {
-    const transaction = transactionCode ? await this.transactionRepository.findOneOrFail(transactionCode) : new Transaction();
+    const user = await this.findUser(userId);
+    const transaction = transactionCode ? await this.transactionRepository.findOneOrFail(transactionCode, { where: { user } }) : new Transaction();
     transaction.amount = data.amount;
-    transaction.user = await this.findUser(userId);
+    transaction.user = user;
     transaction.category = await this.findCategory(data.categoryCode);
     transaction.date = data.date;
     transaction.remark = data.remark;

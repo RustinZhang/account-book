@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateOrAmendCategoryDto } from './dto/create-or-amend-category.dto';
-import { Repository } from 'typeorm';
+import { Repository, FindManyOptions } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Category } from './category.entity';
 import { Transaction } from '../transactions/transaction.entity';
@@ -17,31 +17,12 @@ export class CategoriesService {
     constructor(
         @InjectRepository(Category)
         private readonly categoriesRepository: Repository<Category>,
-        @InjectRepository(Transaction)
-        private readonly transactionRepository: Repository<Transaction>,
         @InjectRepository(User)
         private readonly userRepository: Repository<User>,
     ) { }
 
-    async getList(data: QueryDto): Promise<CategoryListInterface> {
-        const params: any = {
-            order: {
-                updateTime: 'DESC',
-            },
-            where: {},
-        };
-        if (!isEmpty(data)) {
-            const keyMap = {
-                name: 'categoryName',
-                code: 'categoryCode',
-                type: 'isExpense',
-            };
-            for (const key in data) {
-                if (data.hasOwnProperty(key) && !!data[key]) {
-                    params.where[keyMap[key]] = key === 'type' ? data[key] === CATEGORIES_TYPE.EXPENSE : data[key];
-                }
-            }
-        }
+    async getList(data: QueryDto, userId: string): Promise<CategoryListInterface> {
+        const params: FindManyOptions = await this.getFindListParams(data, userId);
         const [categories, count] = await this.categoriesRepository.findAndCount(params);
         return {
             list: map(categories, category => {
@@ -56,12 +37,35 @@ export class CategoriesService {
         };
     }
 
+    private async getFindListParams(data: QueryDto, userId: string): Promise<FindManyOptions> {
+        const user = await this.findUser(userId);
+        const params: FindManyOptions = {
+            order: {
+                updateTime: 'DESC',
+            },
+            where: {
+                user,
+            },
+        };
+        if (!isEmpty(data)) {
+            const keyMap = {
+                name: 'categoryName',
+                code: 'categoryCode',
+                type: 'isExpense',
+            };
+            for (const key in data) {
+                if (data.hasOwnProperty(key) && !!data[key]) {
+                    params.where[keyMap[key]] = key === 'type' ? data[key] === CATEGORIES_TYPE.EXPENSE : data[key];
+                }
+            }
+        }
+        return params;
+    }
+
     async createOrAmend(data: CreateOrAmendCategoryDto, userId: string, categoryCode?: number): Promise<{}> {
-        const category = !!categoryCode ? await this.categoriesRepository.findOneOrFail(categoryCode) : new Category();
-
+        const user = await this.findUser(userId);
+        const category = !!categoryCode ? await this.categoriesRepository.findOneOrFail(categoryCode, { where: { user } }) : new Category();
         const { categoryName, isExpense } = data;
-        const user = await this.userRepository.findOneOrFail(userId);
-
         // 当前创建/修改分类是否已经存在
         const findCategory = await this.categoriesRepository.findOne({ where: { categoryName, isExpense, user } });
         if (!!findCategory) {
@@ -70,7 +74,6 @@ export class CategoriesService {
                 message: '当前分类已存在',
             });
         }
-
         category.categoryName = categoryName;
         category.isExpense = isExpense;
         category.user = user;
@@ -82,9 +85,8 @@ export class CategoriesService {
     }
 
     async delete(categoryCode: number): Promise<{}> {
-        const category: Category = await this.categoriesRepository.findOneOrFail(categoryCode);
-        const transactions: Transaction[] = await this.transactionRepository.find({ where: { category } });
-        if (transactions && transactions.length > 0) {
+        const { transactions = [] } = await this.categoriesRepository.findOneOrFail(categoryCode, { relations: ['transactions'] });
+        if (!isEmpty(transactions)) {
             throw new ParamsError({
                 errorCode: ERROR_CODES.CATEGORIES_TYPE_DELETE_FORBIDDEN,
                 message: '当前分类已有账目关联使用，不能删除',
@@ -92,5 +94,11 @@ export class CategoriesService {
         }
         await this.categoriesRepository.delete(categoryCode);
         return {};
+    }
+
+    private async findUser(userId: string): Promise<User> {
+        return this.userRepository.findOneOrFail({
+            where: { userId },
+        });
     }
 }

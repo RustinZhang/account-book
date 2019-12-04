@@ -16,10 +16,10 @@ export class TransactionsController {
   constructor(private readonly transactionsService: TransactionsService) {}
 
   @Get()
-  async getList(@Query() query: GetTransactionsDto): Promise<TransactionList> {
+  async getList(@Query() query: GetTransactionsDto, @User() user: UserEntity): Promise<TransactionList> {
     const size = toNumber(get(query, 'size', 15));
     const page = toNumber(get(query, 'page', 1));
-    return this.transactionsService.findList(size, page);
+    return this.transactionsService.findList(size, page, user.userId);
   }
 
   @Get(`:${TRANSACTIONS_PATH.CODE_PARAM}`)
